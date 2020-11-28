@@ -199,7 +199,7 @@ accuracy = mean(YPred == imdsValidation.Labels)%计算网络的精确度
 ```
 save googlenet_25000_1 googlenetTrain;% save x y; 保存训练好的模型y（注意：y为训练的模型，即y = trainNetwork()），取名为x
 ```
-# 2.4模型测试
+## 2.4模型测试
 为检验训练好的模型的优良性，选取适当的测试集，检验分类准确性并画出混淆矩阵。运行’GoogleNet_classification_test.mat’相关代码及注释如下：
 ### 加载模型
 ```
