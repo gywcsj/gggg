@@ -4,40 +4,58 @@
 一、项目描述
 -------
 
-本项目使用深度学习进行猫或狗的宠物图片分类，具体任务如下：
-（1）数据集中有猫、狗两类图像。图片名字已注明猫狗类别，需要编写代码根据图片名字中的“cat”或“dog”为图片添加标签”cat(0)“或”dog(1)“。
-（2）选择合适的深度学习网络，编写代码，使用给定数据集，合理设置网络参数并训练得到模型，给出模型准确率指标及分析。训练平台不限，选用的深度学习网络不限。
-（3）首先使用200张的小样本数据集进行训练和测试，分析所得结果为什么不好。再使用25000张的数据集进行训练和测试，观察结果并给出分析。
+本项目使用深度学习进行猫或狗的宠物图片分类，具体任务如下：<br>
+（1）数据集中有猫、狗两类图像。图片名字已注明猫狗类别，需要编写代码根据图片名字中的"cat"或"dog"为图片添加标签"cat(0)"或"dog(1)"。<br>
+（2）选择合适的深度学习网络，编写代码，使用给定数据集，合理设置网络参数并训练得到模型，给出模型准确率指标及分析。训练平台不限，选用的深度学习网络不限。<br>
+（3）首先使用200张的小样本数据集进行训练和测试，分析所得结果为什么不好。再使用25000张的数据集进行训练和测试，观察结果并给出分析。<br>
 
 二、如何运行
 -------------
-按照2.1、2.2、2.3、2.4的步骤运行，可完成项目的相关要求。代码包一共包括：
-1.	‘cat_dog_alexnet.mat’
-2.	‘cat_dog_googlenet.mat’
-3.	‘change_size.mat’
-4.	‘GoogleNet_classification_test.mat’
+按照2.1、2.2、2.3、2.4的步骤运行，可完成项目的相关要求。代码包一共包括：<br>
+1.	‘cat_dog_alexnet.mat’<br>
+2.	‘cat_dog_googlenet.mat’<br>
+3.	‘change_size.mat’<br>
+4.	‘GoogleNet_classification_test.mat’<br>
 运行环境为matlab2020a，大致原理为基于AlexNet与GoogleNet的迁移学习，配置要求要有较高的GPU显卡以及matlab中GoogleNet与AlexNet的程序包。
-#2.1数据集手动分类
 
+2.1数据集手动分类
+---------
 由于数据集已经按照类型进行命名，故采取将容量为200与25000的数据集拆分成两部分，分别存储于名为“cat”（0）与“dog”（1）的文件夹下，记录存储地址。
-#2.2图片大小调整
 
-由于AlexNet与GoogleNet分别需要输入227x227x3与224x224x3格式的照片，而原数据集的图片大小格式不一，需采取程序自动调整图片格式。故运行‘change_size.mat’程序，matlab可自动修改路径下所有图片及文件夹中图片的格式为给定标准，相关代码及注释见‘change_size.mat’。
+2.2图片大小调整
+--------
+由于AlexNet与GoogleNet分别需要输入227x227x3与224x224x3格式的照片，而原数据集的图片大小格式不一，需采取程序自动调整图片格式。<br>
+故运行‘change_size.mat’程序，matlab可自动修改路径下所有图片及文件夹中图片的格式为给定标准。
+ ```
 imds = imageDatastore('D:\Program Files\Polyspace\R2020a\bin\25000_cat_dog', ... %需要修改图片存放地址
-'IncludeSubfolders',true, ...
+ ```
+ ```
+ 'IncludeSubfolders',true, ...
 'LabelSource','foldernames');
 numTrainImages = numel(imds.Labels);%读取数据集数量
+```
+```
 for i = 1:numTrainImages %统一图片尺寸大小
 s = string(imds.Files(i));
 I = imread(s);
 I = imresize(I,[227,227]);%AlexNet与GoogleNet分别需要输入[227，227][224,224]
+```
+```
 imwrite(I,s);
 s %在命令窗口显示修改进程
 end
-#2.3模型训练及检验过程
-将‘cat_dog_alexnet.mat’、‘cat_dog_googlenet.mat’分别导入matlab，对照注释分别执行。
-##（1）AlexNet训练代码及注释
-###加载数据集
+```
+
+2.3模型训练及检验过程
+-------
+将‘cat_dog_alexnet.mat’、‘cat_dog_googlenet.mat’分别导入matlab，对照注释分别执行。<br>
+
+AlexNet训练代码及注释
+----
+
+加载数据集
+----
+```
 clc;clear;
 close all
 imds = imageDatastore('D:\Program Files\Polyspace\R2020a\bin\25000_cat_dog', ...
