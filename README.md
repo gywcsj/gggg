@@ -5,17 +5,18 @@
 -------
 
 本项目使用深度学习进行猫或狗的宠物图片分类，具体任务如下：<br>
-（1）数据集中有猫、狗两类图像。图片名字已注明猫狗类别，需要编写代码根据图片名字中的"cat"或"dog"为图片添加标签"cat(0)"或"dog(1)"。<br>
-（2）选择合适的深度学习网络，编写代码，使用给定数据集，合理设置网络参数并训练得到模型，给出模型准确率指标及分析。训练平台不限，选用的深度学习网络不限。<br>
-（3）首先使用200张的小样本数据集进行训练和测试，分析所得结果为什么不好。再使用25000张的数据集进行训练和测试，观察结果并给出分析。<br>
+>（1）数据集中有猫、狗两类图像。图片名字已注明猫狗类别，需要编写代码根据图片名字中的"cat"或"dog"为图片添加标签"cat(0)"或"dog(1)"。<br>
+>（2）选择合适的深度学习网络，编写代码，使用给定数据集，合理设置网络参数并训练得到模型，给出模型准确率指标及分析。训练平台不限，选用的深度学习网络不限。<br>
+>（3）首先使用200张的小样本数据集进行训练和测试，分析所得结果为什么不好。再使用25000张的数据集进行训练和测试，观察结果并给出分析。<br>
+### 本项目由龚彦维一人完成，贡献度100%
 
 二、如何运行
 -------------
 按照2.1、2.2、2.3、2.4的步骤运行，可完成项目的相关要求。代码包一共包括：<br>
-1.	‘cat_dog_alexnet.mat’<br>
-2.	‘cat_dog_googlenet.mat’<br>
-3.	‘change_size.mat’<br>
-4.	‘GoogleNet_classification_test.mat’<br>
+>1.	‘cat_dog_alexnet.mat’<br>
+>2.	‘cat_dog_googlenet.mat’<br>
+>3.	‘change_size.mat’<br>
+>4.	‘GoogleNet_classification_test.mat’<br>
 运行环境为matlab2020a，大致原理为基于AlexNet与GoogleNet的迁移学习，配置要求要有较高的GPU显卡以及matlab中GoogleNet与AlexNet的程序包。
 
 2.1数据集手动分类
@@ -43,7 +44,7 @@ end
 -------
 将‘cat_dog_alexnet.mat’、‘cat_dog_googlenet.mat’分别导入matlab，对照注释分别执行。<br>
 
-### AlexNet训练代码及注释
+### 2.3.1 AlexNet训练代码及注释
 
 #### 加载数据集
 
@@ -59,7 +60,7 @@ imds = imageDatastore('D:\Program Files\Polyspace\R2020a\bin\25000_cat_dog', ...
 % 可将imds中的图像文件拆分为两个新的数据存储，imds1和imds2.新的数据存储imds1包含每个标签前百分之p个文件，imds2中包含剩余的文件
 numTrainImages = numel(imdsTrain.Labels);%numel数组中的元素数目
 ```
-### 加载预训练网络
+#### 加载预训练网络
 ```
 Alexnet_Train = alexnet;
 %net.Layers %展示这个网络架构，这个网络有5个卷积层和3个全连接层
@@ -75,7 +76,7 @@ softmaxLayer
 classificationLayer];
 % 通过将最后三个图层替换为完全连接图层，softmax图层和分类输出图层，将图层转移到新的分类任务。根据新的数据指定新的完全连接层的选项。将完全连接层设置为与新数据中的类数大小相同。要在新层中比传输层更快的学习，增加完全连接层的WeightLearnRateFactor 和BiasLearnRateFactor的值
 ```
-### 训练网络
+#### 训练网络
 ```
 %用于数据增强，增加数据量这个网络要求的尺寸是227*227*3，但是在图像存储中的图像有不同的尺寸，使用增强数据存储自动调整训练图像大小。在训练图像中指定额外的增强操作：沿着垂直轴随机翻转训练图像，水平和垂直随机移动30个像素单位。
 pixelRange = [-30 30];
@@ -99,7 +100,7 @@ options = trainingOptions('sgdm', ...
 Train = trainNetwork(augimdsTrain,layers,options);
 % trainNetwork——训练神经网络进行深度学习
 ```
-### 验证训练好的模型
+#### 验证训练好的模型
 ```
 [YPred,scores] = classify(Train,augimdsValidation);% classify——使用经过训练的神经网络对数据进行分类
 idx = randperm(numel(imdsValidation.Files),20);% randperm——随机置换随机显示使用训练好的模型进行分类的图片及其标签和概率
@@ -115,12 +116,12 @@ YValidation = imdsValidation.Labels;
 accuracy = mean(YPred == YValidation);
 disp(['accuracy:',num2str(accuracy)]); % 输出预测精度结果
 ```
-### 保存训练好的模型
+#### 保存训练好的模型
 ```
 save Alexnet_25000 Train;
 ```
-## （2）GoogleNet训练代码及注释
-### 加载数据
+### 2.3.2GoogleNet训练代码及注释
+#### 加载数据
 ```
 clc;close all;clear;
 Location = 'D:\Program Files\Polyspace\R2020a\bin\25000_cat_dog';%这里输入自己的数据集地址
@@ -130,12 +131,12 @@ imds = imageDatastore(Location ,... %若使用自己的数据集则改为Locatio
 [imdsTrain,imdsValidation] = splitEachLabel(imds,0.7,'randomized');%将数据集按7:3的比例分为训练集和测试集加载预训练网络
 net = googlenet;
 ```
-### 从训练有素的网络中提取图层，并绘制图层图
+#### 从训练有素的网络中提取图层，并绘制图层图
 ```
 lgraph = layerGraph(net);%从训练网络中提取layer graph
 inputSize = net.Layers(1).InputSize;
 ```
-### 替换最终图层
+#### 替换最终图层
 为了训练Googlenet去分类新的图像，取代网络的最后三层。这三层为'loss3-classifier', 'prob', 和 'output'，包含如何将网络的提取的功能组合为类概率和标签的信息。在层次图中添加三层新层：a fully connected layer, a softmax layer, and a classification output layer 将全连接层设置为同新的数据集中类的数目相同的大小，为了使新层比传输层学习更快，增加全连接层的学习因子。
 ```
 lgraph = removeLayers(lgraph,{'loss3-classifier','prob','output'});
@@ -147,7 +148,7 @@ classificationLayer('Name','classoutput')];
 lgraph = addLayers(lgraph,newLayers);%将网络中最后一个传输层（pool5-drop_7x7_s1）连接到新层
 lgraph = connectLayers(lgraph,'pool5-drop_7x7_s1','fc');
 ```
-### 冻结初始图层
+#### 冻结初始图层
 
 在训练过程中trainNetwork不会跟新冻结层的参数，因为冻结层的梯度不需要计算，冻结大多数初始层的权重对网络训练加速很重要。如果新的数据集很小，冻结早期网络层也可以防止新的数据集过拟合。
 ```
@@ -156,7 +157,7 @@ connections = lgraph.Connections;
 layers(1:110) = freezeWeights(layers(1:110));%调用freezeWeights函数，设置开始的110层学习速率为0
 lgraph = createLgraphUsingConnections(layers,connections);%调用createLgraphUsingConnections函数，按原始顺序重新连接所有的层。
 ```
-### 训练网络
+#### 训练网络
 ```
 pixelRange = [-30 30];
 imageAugmenter = imageDataAugmenter(...
@@ -177,7 +178,7 @@ options = trainingOptions('sgdm', ...
 'Plots','training-progress'); %显示训练过程,开始训练网络
 googlenetTrain = trainNetwork(augimdsTrain,lgraph,options);
 ```
-### 随机显示使用训练好的模型进行分类的图片及其标签和概率
+#### 随机显示使用训练好的模型进行分类的图片及其标签和概率
 ```
 [YPred,scores] = classify(googlenetTrain,augimdsValidation);
 idx = randperm(numel(imdsValidation.Files),20); %随机挑选20张图片进行检验
@@ -190,23 +191,23 @@ label = YPred(idx(i));
 title(string(label) + "," + num2str(100*max(scores(idx(i),:)),3) + "%");%显示结果与准确度
 end
 ```
-### 对验证图像进行分类
+#### 对验证图像进行分类
 ```
 [YPred,probs] = classify(googlenetTrain,augimdsValidation);%使用训练好的网络进行分类
 accuracy = mean(YPred == imdsValidation.Labels)%计算网络的精确度
 ```
-### 保存训练好的模型
+#### 保存训练好的模型
 ```
 save googlenet_25000_1 googlenetTrain;% save x y; 保存训练好的模型y（注意：y为训练的模型，即y = trainNetwork()），取名为x
 ```
 ## 2.4模型测试
 为检验训练好的模型的优良性，选取适当的测试集，检验分类准确性并画出混淆矩阵。运行’GoogleNet_classification_test.mat’相关代码及注释如下：
-### 加载模型
+#### 加载模型
 ```
 clc;close all;clear;
 load('-mat','D:\Program Files\Polyspace\R2020a\bin\googlenet_25000_1');
 ```
-### 加载测试集
+#### 加载测试集
 ```
 Location = 'D:\Program Files\Polyspace\R2020a\bin\25000_cat_dog';
 imds = imageDatastore(Location,'includeSubfolders',true,'LabelSource','foldernames');
@@ -216,7 +217,7 @@ tic;
 YPred = classify(googlenetTrain,imdstest);%使用训练好的模型对测试集进行分类
 disp(['分类所用时间为：',num2str(toc),'秒']);
 ```
-### 显示分类结果，绘制混淆矩阵
+#### 显示分类结果，绘制混淆矩阵
 ```
 cat = 'cat';
 CAT = numel(YPred,YPred == cat);
@@ -230,7 +231,7 @@ disp(['sum = ',num2str(sum)]);
 % numel(A) 返回数组A的数目
 % numel(A,x) 返回数组A在x的条件下的数目
 ```
-### 计算精确度
+#### 计算精确度
 ```
 YTest = imds.Labels;
 accuracy = mean(YPred == YTest);
@@ -238,7 +239,7 @@ disp(['accuracy = ',num2str(accuracy)]);
 % disp(x) 变量x的值
 % num2str(x) 将数值数值转换为表示数字的字符数组
 ```
-### 随机显示测试分类后的图片
+#### 随机显示测试分类后的图片
 ```
 idx = randperm(numel(imds.Files),16);
 figure
@@ -250,7 +251,7 @@ label = YPred(idx(i));
 title(string(label));
 end
 ```
-### 绘制混淆矩阵
+#### 绘制混淆矩阵
 ```
 predictLabel = YPred;%通过训练好的模型分类后的标签
 actualLabel = YTest;%原始的标签
