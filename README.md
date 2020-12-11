@@ -8,9 +8,26 @@
 >（1）数据集中有猫、狗两类图像。图片名字已注明猫狗类别，需要编写代码根据图片名字中的"cat"或"dog"为图片添加标签"cat(0)"或"dog(1)"。<br>
 >（2）选择合适的深度学习网络，编写代码，使用给定数据集，合理设置网络参数并训练得到模型，给出模型准确率指标及分析。训练平台不限，选用的深度学习网络不限。<br>
 >（3）首先使用200张的小样本数据集进行训练和测试，分析所得结果为什么不好。再使用25000张的数据集进行训练和测试，观察结果并给出分析。<br>
-### 本项目由龚彦维一人完成，贡献度100%
 
-二、如何运行
+### 本项目由龚彦维一人完成，贡献度100%
+ 二、配置环境
+ -------
+2.1 所需应用
+-------
+
+本项目基于matlab2020a版本运行，利用AlexNet、GoogLeNet卷积神经网络（CNN）进行迁移学习，需要在matlab的APP区Deep Network Designer中加载预训练网格AlexNet、GoogLeNet。<br>
+
+2.2 硬件资源
+ -------
+ 
+默认情况下，如果GPU可用，则trainNetwork会将其用于训练。尽量保证有单gpu资源，可以保证得以运行。在GPU上训练需要具有计算能力的支持CUDA的GPU。<br>
+
+2.3 运行环境
+ -------
+ 
+运行平台Windows10，安装10.2版本的cuda库。<br>
+    
+三、如何运行
 -------------
 按照2.1、2.2、2.3、2.4的步骤运行，可完成项目的相关要求。代码包一共包括：<br>
 >1.	‘cat_dog_alexnet.mat’<br>
@@ -19,11 +36,11 @@
 >4.	‘GoogleNet_classification_test.mat’<br>
 运行环境为matlab2020a，大致原理为基于AlexNet与GoogleNet的迁移学习，配置要求要有较高的GPU显卡以及matlab中GoogleNet与AlexNet的程序包。
 
-2.1数据集手动分类
+3.1数据集手动分类
 ---------
 由于数据集已经按照类型进行命名，故采取将容量为200与25000的数据集拆分成两部分，分别存储于名为“cat”（0）与“dog”（1）的文件夹下，记录存储地址。
 
-2.2图片大小调整
+3.2图片大小调整
 --------
 由于AlexNet与GoogleNet分别需要输入227x227x3与224x224x3格式的照片，而原数据集的图片大小格式不一，需采取程序自动调整图片格式。<br>
 故运行‘change_size.mat’程序，matlab可自动修改路径下所有图片及文件夹中图片的格式为给定标准。
@@ -40,11 +57,11 @@ imwrite(I,s);
 s %在命令窗口显示修改进程
 end
 ```
-2.3模型训练及检验过程
+3.3模型训练及检验过程
 -------
 将‘cat_dog_alexnet.mat’、‘cat_dog_googlenet.mat’分别导入matlab，对照注释分别执行。<br>
 
-### 2.3.1 AlexNet训练代码及注释
+### 3.3.1 AlexNet训练代码及注释
 
 #### 加载数据集
 
@@ -120,7 +137,7 @@ disp(['accuracy:',num2str(accuracy)]); % 输出预测精度结果
 ```
 save Alexnet_25000 Train;
 ```
-### 2.3.2GoogleNet训练代码及注释
+### 3.3.2GoogleNet训练代码及注释
 #### 加载数据
 ```
 clc;close all;clear;
@@ -200,7 +217,7 @@ accuracy = mean(YPred == imdsValidation.Labels)%计算网络的精确度
 ```
 save googlenet_25000_1 googlenetTrain;% save x y; 保存训练好的模型y（注意：y为训练的模型，即y = trainNetwork()），取名为x
 ```
-## 2.4模型测试
+## 3.4模型测试
 为检验训练好的模型的优良性，选取适当的测试集，检验分类准确性并画出混淆矩阵。运行’GoogleNet_classification_test.mat’相关代码及注释如下：
 #### 加载模型
 ```
